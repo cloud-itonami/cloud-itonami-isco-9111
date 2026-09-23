@@ -1,5 +1,5 @@
 (ns domestic-cleaning.governor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [domestic-cleaning.store :as store]
             [domestic-cleaning.governor :as governor]))
 
