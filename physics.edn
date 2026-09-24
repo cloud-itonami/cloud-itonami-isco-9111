@@ -1,0 +1,33 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:physics` runs it.
+;;
+;; README "Robotics premise": a cleaning-assist robot performs vacuuming,
+;; surface cleaning and restocking of household supplies (ISCO 9111). Its
+;; physical work: a small vacuum robot climbing the ramp of a door threshold
+;; onto carpet, and an arm putting a refill bottle of cleaning agent back on
+;; the cupboard shelf.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isco-9111"
+ :cases
+ [{:id :vacuum-over-threshold-ramp
+   :kind :transport
+   :procedure "a 4 kg vacuum robot drives 0.5 m up a door-threshold ramp onto carpet"
+   :params {:mass-kg 4.0 :payload-kg 0.4 :distance-m 0.5 :v-max-mps 0.3 :a-max-mps2 0.5
+            :brake-decel-mps2 0.8 :drive-force-n 9.0 :crr 0.05
+            :cog-height-m 0.04 :support-half-length-m 0.12 :max-time-s 60.0}
+   :sweep {:param :slope-deg :values [0.0 4.0 8.0 12.0 16.0]}
+   :quantity :cycle-time-s
+   :limit {:max 5.0 :basis "estimate: a threshold crossing should not take longer than a few seconds of the room-cleaning pass"}
+   :boundary {:lo 0.0 :hi 25.0}}
+  {:id :detergent-refill-to-shelf
+   :kind :manipulator
+   :procedure "light arm lifts a refill bottle of cleaning agent from the supply caddy onto a cupboard shelf"
+   :params {:l1-m 0.35 :l2-m 0.30 :m1-kg 2.0 :m2-kg 1.5
+            :from [0.40 0.05] :to [0.15 0.50] :duration-s 2.0 :steps 400}
+   :sweep {:param :payload-kg :values [0.5 1.0 2.0 3.5 5.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 25.0 :basis "estimate: continuous shoulder torque of a ~3 kg-payload domestic arm"}
+   :boundary {:lo 0.1 :hi 15.0}}]}
